@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Text;
 
-namespace RIAT_1 {
-	public class Program {
-		public static void Main(string[] args) {
+namespace RIAT_1
+{
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
 			string typeSerialize = Console.ReadLine();
 			ISerialize serialize;
 			if (typeSerialize == "Json")
@@ -17,7 +20,8 @@ namespace RIAT_1 {
 			Console.WriteLine(Encoding.UTF8.GetString(serialize.Serializing(output)));
 		}
 
-		private static Output CreateOutput(Input input) {
+		private static Output CreateOutput(Input input)
+		{
 			Output output = new Output();
 			output.SumResult = input.Sums.Sum() * input.K;
 
