@@ -33,7 +33,8 @@ namespace ConsoleApplication2
 					context = listener.GetContext();
 
 					string methodName = context.Request.RawUrl.Split('?')[0].Substring(1);
-					GetType().GetMethod(methodName).Invoke(this, new object[0]);
+                    //todo: вызывать методы GetType().GetMethod(methodName) каждый раз очень долго, закешируйте их при инициализации класса
+                    GetType().GetMethod(methodName).Invoke(this, new object[0]);
 				}
 				catch (Exception)
 				{
