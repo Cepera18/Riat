@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 
 namespace ConsoleApplication2
@@ -12,14 +14,25 @@ namespace ConsoleApplication2
 		private readonly string url;
 		private HttpListener listener { get; set; }
 		private HttpListenerContext context { get; set; }
+		private readonly Dictionary<string, MethodInfo> methods;
 		private Input input { get; set; }
 
 		public HttpServer(ISerialize serialize, string domain, int port)
 		{
 			this.serialize = serialize;
 			url = $"http://{domain}:{port}/";
+			methods = GetMethods();
 		}
-		
+		private Dictionary<string, MethodInfo> GetMethods()
+		{
+			var methods = new Dictionary<string, MethodInfo>();
+			foreach (var method in GetType().GetMethods())
+			{
+				methods[method.Name] = method;
+			}
+			return methods;
+		} 
+
 		public void Listen()
 		{
 			listener = new HttpListener();
@@ -33,8 +46,7 @@ namespace ConsoleApplication2
 					context = listener.GetContext();
 
 					string methodName = context.Request.RawUrl.Split('?')[0].Substring(1);
-                    //todo: вызывать методы GetType().GetMethod(methodName) каждый раз очень долго, закешируйте их при инициализации класса
-                    GetType().GetMethod(methodName).Invoke(this, new object[0]);
+					methods[methodName].Invoke(this, new object[0]);
 				}
 				catch (Exception)
 				{
